@@ -23,51 +23,53 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 ###############################################################################
 
-# NOTE: update executable name in .github/workflows/cmake.yml when changing name here
-add_executable(${PROJECT_NAME} main.cpp)
-
 ###############################################################################
 
 # custom compiler flags
-message("Compiler: ${CMAKE_CXX_COMPILER_ID} version ${CMAKE_CXX_COMPILER_VERSION}")
-if(MSVC)
-    target_compile_options(${PROJECT_NAME} PRIVATE /W4 /WX /permissive-)
-else()
-    target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -pedantic -Werror)
+foreach(SRC_FILE complex_numbers)
+    # NOTE: update executable name in .github/workflows/cmake.yml when changing name here
+    add_executable(${SRC_FILE} "src/${SRC_FILE}.cpp")
 
-    if("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
-    elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-        target_compile_options(${PROJECT_NAME} PRIVATE -stdlib=libstdc++)
-    elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang")
-        target_compile_options(${PROJECT_NAME} PRIVATE -stdlib=libc++)
-    endif()
-endif()
+    message("Compiler: ${CMAKE_CXX_COMPILER_ID} version ${CMAKE_CXX_COMPILER_VERSION}")
+    if(MSVC)
+        target_compile_options(${SRC_FILE} PRIVATE /W4 /WX /permissive-)
+    else()
+        target_compile_options(${SRC_FILE} PRIVATE -Wall -Wextra -pedantic -Werror)
 
-###############################################################################
-
-# sanitizers
-# should disable them when releasing executables
-if(APPLE)
-    # if("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
-    # first check Apple since Apple is also a kind of Unix
-    target_compile_options(${PROJECT_NAME} PRIVATE -fsanitize=address,undefined)
-    target_link_options(${PROJECT_NAME} PRIVATE -fsanitize=address,undefined)
-    # endif()
-elseif(UNIX)
-    if("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
-        # we cannot mix sanitizers with Valgrind
-    elseif("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
-        if("${CMAKE_CXX_COMPILER_VERSION}" MATCHES "10.")
-            # check leaks on Linux since macOS does not support the leaks sanitizer yet
-            # leaks sanitizer is enabled by default on Linux, so we do not need to enable it explicitly
-            target_compile_options(${PROJECT_NAME} PRIVATE -fsanitize=address,undefined)
-            target_link_options(${PROJECT_NAME} PRIVATE -fsanitize=address,undefined)
-        else()
-            target_compile_options(${PROJECT_NAME} PRIVATE -fsanitize=memory,undefined)
-            target_link_options(${PROJECT_NAME} PRIVATE -fsanitize=memory,undefined)
+        if("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
+        elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+            target_compile_options(${SRC_FILE} PRIVATE -stdlib=libstdc++)
+        elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang")
+            target_compile_options(${SRC_FILE} PRIVATE -stdlib=libc++)
         endif()
     endif()
-endif()
+
+    ###############################################################################
+
+    # sanitizers
+    # should disable them when releasing executables
+    if(APPLE)
+        # if("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+        # first check Apple since Apple is also a kind of Unix
+        target_compile_options(${SRC_FILE} PRIVATE -fsanitize=address,undefined)
+        target_link_options(${SRC_FILE} PRIVATE -fsanitize=address,undefined)
+        # endif()
+    elseif(UNIX)
+        if("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
+            # we cannot mix sanitizers with Valgrind
+        elseif("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+            if("${CMAKE_CXX_COMPILER_VERSION}" MATCHES "10.")
+                # check leaks on Linux since macOS does not support the leaks sanitizer yet
+                # leaks sanitizer is enabled by default on Linux, so we do not need to enable it explicitly
+                target_compile_options(${SRC_FILE} PRIVATE -fsanitize=address,undefined)
+                target_link_options(${SRC_FILE} PRIVATE -fsanitize=address,undefined)
+            else()
+                target_compile_options(${SRC_FILE} PRIVATE -fsanitize=memory,undefined)
+                target_link_options(${SRC_FILE} PRIVATE -fsanitize=memory,undefined)
+            endif()
+        endif()
+    endif()
+endforeach()
 
 ###############################################################################
 
@@ -79,6 +81,6 @@ endif()
 ###############################################################################
 
 # copy binaries to bin folder; these are uploaded as artifacts on each release
-install(TARGETS ${PROJECT_NAME} DESTINATION bin)
+# install(TARGETS ${PROJECT_NAME} DESTINATION bin)
 # install(DIRECTORY some_dir1 some_dir2 DESTINATION bin)
 # install(FILES some_file1.txt some_file2.md DESTINATION bin)
