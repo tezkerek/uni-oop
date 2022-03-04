@@ -25,11 +25,13 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 ###############################################################################
 
-# custom compiler flags
-foreach(SRC_FILE complex_numbers)
-    # NOTE: update executable name in .github/workflows/cmake.yml when changing name here
-    add_executable(${SRC_FILE} "src/${SRC_FILE}.cpp")
+# NOTE: update executable name in .github/workflows/cmake.yml when changing name here
+add_executable(complex_numbers src/complex_numbers.cpp)
+add_executable(char_queue src/char_queue.cpp src/CharQueue.cpp)
 
+
+# custom compiler flags
+foreach(SRC_FILE complex_numbers char_queue)
     message("Compiler: ${CMAKE_CXX_COMPILER_ID} version ${CMAKE_CXX_COMPILER_VERSION}")
     if(MSVC)
         target_compile_options(${SRC_FILE} PRIVATE /W4 /WX /permissive-)
