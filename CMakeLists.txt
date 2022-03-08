@@ -27,8 +27,9 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 # NOTE: update executable name in .github/workflows/cmake.yml when changing name here
 add_executable(complex_numbers src/complex_numbers.cpp)
-add_executable(char_queue src/char_queue.cpp src/CharQueue.cpp)
-
+add_executable(char_queue
+    src/char_queue/CharQueue.cpp
+)
 
 # custom compiler flags
 foreach(SRC_FILE complex_numbers char_queue)

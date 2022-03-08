@@ -12,8 +12,8 @@ Node *Node::getNext() const { return next; }
 void Node::setValue(char value) { this->value = value; }
 void Node::setNext(Node *next) { this->next = next; }
 
-CharQueue::CharQueue() : start(nullptr), end(nullptr) {}
-CharQueue::CharQueue(const CharQueue &rhs) : start(nullptr), end(nullptr) {
+CharQueue::CharQueue() : start(nullptr), end(nullptr), size_(0) {}
+CharQueue::CharQueue(const CharQueue &rhs) : CharQueue() {
     if (rhs.isEmpty()) {
         return;
     }
@@ -29,7 +29,9 @@ CharQueue::CharQueue(const CharQueue &rhs) : start(nullptr), end(nullptr) {
         origNode = origNode->getNext();
     }
     end = prevNode;
+    size_ = rhs.size();
 }
+CharQueue::CharQueue(const std::string &str) : CharQueue() { *this = str; }
 CharQueue::~CharQueue() {
     auto node = start;
     while (node != nullptr) {
@@ -39,6 +41,7 @@ CharQueue::~CharQueue() {
     }
 }
 
+std::size_t CharQueue::size() const { return size_; }
 bool CharQueue::isEmpty() const { return start == nullptr; }
 
 void CharQueue::push(char value) {
@@ -49,6 +52,7 @@ void CharQueue::push(char value) {
         end->setNext(newNode);
         end = newNode;
     }
+    size_++;
 }
 
 char CharQueue::pop() {
@@ -60,7 +64,38 @@ char CharQueue::pop() {
         // oldStart == end, so end was also freed
         end = nullptr;
     }
+    size_--;
     return value;
+}
+
+void CharQueue::clear() {
+    while (!isEmpty()) {
+        pop();
+    }
+}
+
+CharQueue &CharQueue::operator=(const std::string &str) {
+    // Remove extra nodes from current queue (if str is shorter than the queue)
+    for (std::size_t i = str.length(); i < size(); i++) {
+        pop();
+    }
+
+    // Set values for existing nodes
+    auto node = start;
+    std::size_t pos = 0;
+    while (node != nullptr) {
+        node->setValue(str[pos]);
+        pos++;
+        node = node->getNext();
+    }
+
+    // Add nodes for any remaining chars in the string (if str is longer than
+    // the queue)
+    for (; pos < str.length(); pos++) {
+        push(str[pos]);
+    }
+
+    return *this;
 }
 
 CharQueue operator+(const CharQueue &lhs, const CharQueue &rhs) {
