@@ -32,9 +32,13 @@ add_executable(char_queue
     src/char_queue/CharQueue.cpp
     src/char_queue/REPL.cpp
 )
+add_executable(car_circuit
+    src/car_circuit/main.cpp
+    src/car_circuit/Circuit.cpp
+    src/car_circuit/Car.cpp)
 
 # custom compiler flags
-foreach(SRC_FILE complex_numbers char_queue)
+foreach(SRC_FILE complex_numbers char_queue car_circuit)
     message("Compiler: ${CMAKE_CXX_COMPILER_ID} version ${CMAKE_CXX_COMPILER_VERSION}")
     if(MSVC)
         target_compile_options(${SRC_FILE} PRIVATE /W4 /WX /permissive-)
