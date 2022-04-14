@@ -15,6 +15,15 @@ Group::Group(const Group &rhs) {
     }
 }
 
+Group &Group::operator=(const Group &rhs) {
+    name = rhs.name;
+    for (const auto &entry : rhs.entries) {
+        entries.push_back(entry->clone());
+    }
+
+    return *this;
+}
+
 std::string Group::getName() const noexcept { return name; }
 
 const decltype(Group::entries) &Group::getEntries() const noexcept {

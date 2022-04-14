@@ -18,6 +18,8 @@ public:
     explicit Group(std::string name);
     Group(const Group &rhs);
 
+    Group &operator=(const Group &rhs);
+
     [[nodiscard]] std::string getName() const noexcept;
     [[nodiscard]] const decltype(entries) &getEntries() const noexcept;
 

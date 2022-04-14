@@ -28,6 +28,11 @@ int main() {
     }
     db.addEntry("Uni", teamsAccount);
 
+    passman::Group group2("Uni2");
+    group2 = db.getGroup("Uni");
+    group2.addEntry(passman::Note("Extra note"));
+    std::cerr << "Called operator=\n" << group2 << '\n';
+
     db.addGroup("Shopping");
     try {
         db.addGroup("Shopping");
