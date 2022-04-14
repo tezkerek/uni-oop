@@ -7,6 +7,7 @@ project(oop)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 ###############################################################################
 
@@ -37,9 +38,16 @@ add_executable(car_circuit
     src/car_circuit/Circuit.cpp
     src/car_circuit/Car.cpp)
 
+file(GLOB PASSWORD_MANAGER_SOURCES "./src/password_manager/*.cpp")
+message("Sources: ${PASSWORD_MANAGER_SOURCES}")
+add_executable(password_manager ${PASSWORD_MANAGER_SOURCES})
+
 # custom compiler flags
 foreach(SRC_FILE complex_numbers char_queue car_circuit)
     message("Compiler: ${CMAKE_CXX_COMPILER_ID} version ${CMAKE_CXX_COMPILER_VERSION}")
+
+    target_include_directories(${SRC_FILE} PRIVATE ${PROJECT_SOURCE_DIR}/include)
+
     if(MSVC)
         target_compile_options(${SRC_FILE} PRIVATE /W4 /WX /permissive-)
     else()
