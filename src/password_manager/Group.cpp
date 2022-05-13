@@ -1,15 +1,14 @@
-#include "Group.hpp"
-
 #include <memory>
 #include <ostream>
 #include <string>
+
+#include "Group.hpp"
 
 namespace passman {
 
 Group::Group(std::string name) : name(std::move(name)) {}
 
-Group::Group(const Group &rhs) {
-    name = rhs.name;
+Group::Group(const Group &rhs) : name(rhs.name) {
     for (const auto &entry : rhs.entries) {
         entries.push_back(entry->clone());
     }
