@@ -1,4 +1,5 @@
 #include "REPL.hpp"
+#include <algorithm>
 #include <iostream>
 #include <stdexcept>
 
